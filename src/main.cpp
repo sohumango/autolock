@@ -44,8 +44,8 @@ bool judge_lights(){
       arr_screenoff[i] = arr_screenoff[i+1];
     }
     arr_screenoff[len_off-1] = currVal;
-    Serial.print(currVal);
-    Serial.println(" is put to last position");
+    Serial.print("add:value:");
+    Serial.println(currVal);
   } else if(currVal-avg>10) {
     return true; // only screen off value put to array.
   }
@@ -82,25 +82,21 @@ void loop() {
     pushButton(svAnsw, nmaxAnsw); // close screen
   }
 
-  if (digitalRead(D2) == HIGH){ // Button 2
-    Serial.println("Button: A");
-    pushButton(svAnsw, nmaxAnsw);
-    delay(500);
-  }
-  if (digitalRead(D1) == HIGH){ // Button 3
-    Serial.println("Botton: D");
-    pushButton(svOpen, nmaxOpen);;
-    delay(500);
-  }
-
-
-  if (digitalRead(D0) == HIGH){Serial.println("Boton: B"); delay(500);}
   if(judge_lights()==true){
-    Serial.print("Screen on\n");
+    Serial.print("screen:on\n");
   }
   if (Serial.available() > 0) {
     char x = Serial.read();
-    Serial.print("Read byte:");
-    Serial.println(x);
+    if(x=='a'){
+      Serial.println("oncmd:a:answer_unlock");
+      pushButton(svAnsw, nmaxAnsw); //answer screen
+      delay(500);
+      pushButton(svOpen, nmaxOpen); // unlock
+      delay(500);
+      pushButton(svAnsw, nmaxAnsw); // close screen
+    } else {
+      Serial.print("unkown cmd byte:");
+      Serial.println(x);
+    }
   }
 }
